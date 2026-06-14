@@ -17,6 +17,21 @@ none of which a plain copy-paste handles.
 
 > Free and open source (MIT). Built to be a no-nonsense, dependency-light Windows tool.
 
+## How it works
+
+```mermaid
+flowchart LR
+    A[Old PC - analyse] --> B[analysis_result.json]
+    B --> C[Pre-flight - is the new PC ready]
+    C --> D[Transfer - redact secrets and fix paths]
+    D --> E[Scaffold - fill the 5 pillars]
+    E --> F[MIGRATION-REPORT.md]
+```
+
+<!-- TODO: add a short screen recording here. Record the menu running a migration,
+     save it as docs/demo.gif, and embed:  ![demo](docs/demo.gif) -->
+> 📹 *A short demo GIF goes here — the fastest way to show what it does.*
+
 ## Run it (single program, double-click)
 
 **Easiest:** download **`Claude-Migrate.exe`** from the [Releases](../../releases) page, then double-click it.
@@ -117,6 +132,32 @@ Add `--yes` to skip confirmation prompts (for automation).
 - `MIGRATION-REPORT.md` — a do-this-in-order action list
 
 Plus `analysis_result.json` and `migration.log` in the working directory.
+
+<details>
+<summary>📄 Sample <code>MIGRATION-REPORT.md</code> (click to expand)</summary>
+
+```markdown
+# Claude Migration Report
+
+## Setup Maturity Score: 3/5 pillars complete
+
+| Pillar              | Status on Old Machine | Status on New Machine |
+|---------------------|-----------------------|-----------------------|
+| Profile (CLAUDE.md) | present               | created               |
+| Memory              | Unknown — check manually | Check manually      |
+| Writing Style       | partial               | created               |
+| Projects            | present               | 2 scaffolded          |
+| Connectors (MCP)    | present               | 3 servers restored    |
+
+## Your Action List — Do These in Order
+
+### 1. Review Your Profile (10 minutes)
+File: ~/.claude/CLAUDE.md — edit the placeholder sections. Highest-impact step.
+
+### 4. Reconnect MCP Servers
+File: ~/.claude/connectors-todo.md — re-enter API tokens first (never copied, for security).
+```
+</details>
 
 ## Safety
 

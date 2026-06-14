@@ -6,8 +6,8 @@ Thanks for your interest! This is a small, focused Windows tool — contribution
 ## Dev setup
 
 ```powershell
-git clone https://github.com/hemantrulz/claude-migrate
-cd claude-migrate
+git clone https://github.com/Hemantrulz9/claude-migration-tool
+cd claude-migration-tool
 python -m pip install -r requirements-dev.txt
 pytest -q
 ```

@@ -19,7 +19,7 @@
 param(
     [string] $Exe = (Join-Path $PSScriptRoot 'dist\Claude-Migrate.exe'),
     [string] $Publisher = 'hemantrulz',
-    [string] $PfxPassword = 'hemantrulz-sign',
+    [string] $PfxPassword,
     [string] $TimestampServer = 'http://timestamp.digicert.com'
 )
 $ErrorActionPreference = 'Stop'
@@ -60,12 +60,13 @@ Write-Host "(Status 'UnknownError/NotTrusted' is normal for self-signed until th
 $dir = Join-Path $PSScriptRoot 'signing'
 New-Item -ItemType Directory -Force -Path $dir | Out-Null
 Export-Certificate -Cert $cert -FilePath (Join-Path $dir "$Publisher.cer") | Out-Null
-Export-PfxCertificate -Cert $cert -FilePath (Join-Path $dir "$Publisher.pfx") `
-    -Password (ConvertTo-SecureString $PfxPassword -AsPlainText -Force) | Out-Null
+if ($PfxPassword) { $pfxSec = ConvertTo-SecureString $PfxPassword -AsPlainText -Force }
+else { $pfxSec = Read-Host "Enter a password to protect the .pfx private-key backup" -AsSecureString }
+Export-PfxCertificate -Cert $cert -FilePath (Join-Path $dir "$Publisher.pfx") -Password $pfxSec | Out-Null
 Write-Host ""
 Write-Host "Exported:" -ForegroundColor Cyan
 Write-Host "  $dir\$Publisher.cer   (public cert -- import on target machines to trust)"
-Write-Host "  $dir\$Publisher.pfx   (private backup -- password: $PfxPassword -- keep safe)"
+Write-Host "  $dir\$Publisher.pfx   (private key backup -- keep it and its password safe; never commit)"
 Write-Host ""
 Write-Host "To trust on a target machine (run as admin):" -ForegroundColor Cyan
 Write-Host "  Import-Certificate -FilePath $Publisher.cer -CertStoreLocation Cert:\LocalMachine\Root"

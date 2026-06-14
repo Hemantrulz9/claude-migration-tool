@@ -2,7 +2,7 @@
 
 **Move your Claude Desktop + Claude Code setup to a new Windows PC — without the silent breakage.**
 
-[![CI](https://github.com/hemantrulz/claude-migrate/actions/workflows/ci.yml/badge.svg)](https://github.com/hemantrulz/claude-migrate/actions/workflows/ci.yml)
+[![CI](https://github.com/Hemantrulz9/claude-migration-tool/actions/workflows/ci.yml/badge.svg)](https://github.com/Hemantrulz9/claude-migration-tool/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
 ![Platform](https://img.shields.io/badge/platform-Windows%2010%2F11-0078D6)
 ![License](https://img.shields.io/badge/license-MIT-green)
@@ -19,11 +19,11 @@ none of which a plain copy-paste handles.
 
 ## Run it (single program, double-click)
 
-**Easiest:** double-click **`dist\Claude-Migrate.exe`**.
+**Easiest:** download **`Claude-Migrate.exe`** from the [Releases](../../releases) page, then double-click it.
 - It asks for **administrator rights** (UAC), then opens an interactive menu.
 - No Python install required — everything is bundled in the one file.
-- Or double-click **`Claude-Migrate.bat`** (self-elevates, then runs the exe, or Python if the
-  exe isn't built).
+- Cloned the repo instead? Double-click **`Claude-Migrate.bat`** (self-elevates and runs from
+  source), or build the exe yourself (see below).
 
 The menu walks you through: **Full migration**, **Analyse**, **Pre-flight check**, **Scaffold**,
 and **Generate report**.
@@ -46,8 +46,8 @@ File → Properties → Digital Signatures shows **hemantrulz** as the signer.
   ```powershell
   powershell -ExecutionPolicy Bypass -File .\Sign-Build.ps1
   ```
-- Cert files are in `.\signing\` — `hemantrulz.cer` (public) and `hemantrulz.pfx` (private
-  backup, password `hemantrulz-sign`; keep it safe to re-sign on other machines).
+- Cert files are written to `.\signing\` (git-ignored): `hemantrulz.cer` (public) and
+  `hemantrulz.pfx` (private key backup). Keep the `.pfx` and its password private — never commit them.
 
 **Trust it on a machine** (so Windows shows the signature as *valid* — one-time):
 double-click `hemantrulz.cer` → **Install Certificate** → *Local Machine* → *Place all
@@ -174,7 +174,7 @@ everything runs locally on your machine.
 
 ## Author
 
-Built by **[hemantrulz](https://github.com/hemantrulz)** — part of the **ExcelProKit** project.
+Built by **[hemantrulz](https://github.com/Hemantrulz9)** — part of the **ExcelProKit** project.
 If this saved you time, a ⭐ on the repo helps it reach other Claude users.
 
 ## License

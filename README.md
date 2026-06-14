@@ -21,7 +21,7 @@ none of which a plain copy-paste handles.
 
 **Easiest:** double-click **`dist\Claude-Migrate.exe`**.
 - It asks for **administrator rights** (UAC), then opens an interactive menu.
-- No Python install required — everything is bundled in the one file.
+- No Python install required everything is bundled in the one file.
 - Or double-click **`Claude-Migrate.bat`** (self-elevates, then runs the exe, or Python if the
   exe isn't built).
 
@@ -169,12 +169,12 @@ pytest -q
 ## Disclaimer
 
 Not affiliated with or endorsed by Anthropic. "Claude" is a trademark of Anthropic. This is an
-independent community tool. It never copies API keys/tokens and never uploads your data anywhere —
+independent community tool. It never copies API keys/tokens and never uploads your data anywhere
 everything runs locally on your machine.
 
 ## Author
 
-Built by **[hemantrulz](https://github.com/hemantrulz)** — part of the **ExcelProKit** project.
+Built by **[hemantrulz](https://github.com/hemantrulz)**  part of the **ExcelProKit** project.
 If this saved you time, a ⭐ on the repo helps it reach other Claude users.
 
 ## License

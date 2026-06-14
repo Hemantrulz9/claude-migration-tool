@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "claude-migrate"
+version = "1.0.0"
+description = "Safely migrate, audit, and scaffold your Claude Desktop + Claude Code setup on Windows."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Hemant Chauhan (hemantrulz)" }]
+keywords = ["claude", "claude-code", "mcp", "migration", "windows", "backup"]
+dependencies = ["rich>=13.0"]
+classifiers = [
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python :: 3",
+    "Topic :: Utilities",
+]
+
+[project.urls]
+Homepage = "https://github.com/hemantrulz/claude-migrate"
+Issues = "https://github.com/hemantrulz/claude-migrate/issues"
+
+[project.scripts]
+claude-migrate = "main:main"
+
+[tool.setuptools]
+py-modules = [
+    "main", "config", "analyser", "preflight",
+    "scaffold_generator", "report_generator", "path_rewriter", "security",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

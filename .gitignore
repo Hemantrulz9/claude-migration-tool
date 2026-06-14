@@ -1,0 +1,33 @@
+# ---- SECURITY: never commit signing private keys ----
+*.pfx
+*.p12
+*.key
+*.pem
+signing/
+
+# ---- build / runtime artifacts ----
+dist/
+build/
+*.spec
+__pycache__/
+*.pyc
+*.pyo
+
+# ---- tool runtime output (machine-specific) ----
+migration.log
+analysis_result.json
+MIGRATION-REPORT.md
+
+# ---- editors / OS ----
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+
+# ---- python envs ----
+.venv/
+venv/
+env/
+*.egg-info/
+.pytest_cache/

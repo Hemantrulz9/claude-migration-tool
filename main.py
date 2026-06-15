@@ -17,7 +17,6 @@ from __future__ import annotations
 import argparse
 import ctypes
 import json
-import os
 import sys
 from pathlib import Path
 
@@ -45,27 +44,9 @@ def is_admin() -> bool:
         return False
 
 
-def try_elevate() -> bool:
-    """
-    Best-effort: try to relaunch elevated (UAC). Returns True if an elevated instance
-    was launched (the caller should exit this one). Returns False if elevation was
-    declined or unavailable — the caller then continues as a standard user, which is
-    fine because the core migration only writes to the user's own profile.
-    """
-    if getattr(sys, "frozen", False):  # PyInstaller exe
-        exe, params = sys.executable, ""
-    else:  # running as a script
-        exe, params = sys.executable, f'"{os.path.abspath(__file__)}"'
-    try:
-        rc = ctypes.windll.shell32.ShellExecuteW(None, "runas", exe, params, None, 1)
-        return int(rc) > 32  # >32 == success; <=32 == declined/failed
-    except Exception:
-        return False
-
-
 def _pause():
     try:
-        input("\nPress Enter to continue...")
+        input("\nPress Enter to return to the menu...")
     except (EOFError, KeyboardInterrupt):
         pass
 
@@ -82,42 +63,48 @@ def interactive_menu() -> None:
     """Menu shown on double-click (no CLI args)."""
     here = config.USERPROFILE
     say("\n" + "=" * 60, style="magenta")
-    say("   CLAUDE MIGRATION TOOL  v" + config.TOOL_VERSION, style="bold magenta")
+    say("   Claude Migrate  v" + config.TOOL_VERSION, style="bold magenta")
+    say("   Move your Claude setup to another PC - safely.", style="magenta")
     say("=" * 60, style="magenta")
-    say(f"   Administrator: {'YES' if is_admin() else 'no (some steps may be limited)'}",
-        style=("green" if is_admin() else "yellow"))
+    if is_admin():
+        say("   Running as administrator: yes", style="green")
+    else:
+        say("   Not running as administrator - that's fine for normal use.", style="yellow")
+        say("   (For system-wide steps, close this and right-click -> Run as administrator.)", style="yellow")
+    say("   New here? Choose 2 - it only looks at your setup and changes nothing.", style="cyan")
     while True:
-        say("\n  1. Full migration   (analyse -> preflight -> transfer -> scaffold -> report)")
-        say("  2. Analyse this machine")
-        say("  3. Pre-flight check (is this machine ready?)")
-        say("  4. Scaffold smart setup (from analysis_result.json)")
-        say("  5. Generate migration report")
-        say("  6. Quit")
+        say("\n  What would you like to do?")
+        say("    1.  Move my Claude setup to a new PC    (guided; asks before any change)")
+        say("    2.  Check this PC's setup               (safe - read-only, shows a score)")
+        say("    3.  Is this PC ready for Claude?        (safe - read-only)")
+        say("    4.  Create starter setup files here     (writes new files)")
+        say("    5.  Write the plain-English report")
+        say("    6.  Quit")
         try:
-            choice = input("\n  Choose 1-6: ").strip().lstrip("﻿")
+            choice = input("\n  Type a number (1-6) and press Enter: ").strip().lstrip("﻿")
         except (EOFError, KeyboardInterrupt):
             return
         try:
             if choice == "1":
-                src = _ask_path("Source profile path", here)
-                tgt = _ask_path("Target profile path", here)
+                src = _ask_path("Folder to copy FROM (the old PC) - press Enter for this PC", here)
+                tgt = _ask_path("Folder to set up (the new PC) - press Enter for this PC", here)
                 cmd_full(argparse.Namespace(source=str(src), target=str(tgt), yes=False))
             elif choice == "2":
-                src = _ask_path("Source profile path", here)
+                src = _ask_path("Folder to check - press Enter for this PC", here)
                 cmd_analyse(argparse.Namespace(source=str(src)))
             elif choice == "3":
                 cmd_preflight_nonexit(Path(here))
             elif choice == "4":
-                tgt = _ask_path("Target profile path", here)
+                tgt = _ask_path("Folder to set up - press Enter for this PC", here)
                 cmd_scaffold(argparse.Namespace(from_file=None, target=str(tgt), yes=False))
             elif choice == "5":
-                tgt = _ask_path("Target profile path", here)
+                tgt = _ask_path("Folder to write the report into - press Enter for this PC", here)
                 cmd_report(argparse.Namespace(from_file=None, target=str(tgt)))
             elif choice in ("6", "q", "quit", "exit"):
-                say("Goodbye.", style="cyan")
+                say("Thanks for using Claude Migrate. Bye!", style="cyan")
                 return
             else:
-                say("Enter a number 1-6.", style="yellow")
+                say("Please type a number from 1 to 6.", style="yellow")
                 continue
         except SystemExit:
             pass  # don't let a sub-command exit the menu
@@ -349,18 +336,21 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv=None):
     argv = sys.argv[1:] if argv is None else argv
-    # Bare launch (double-click): elevate to admin, then show the interactive menu.
+    # Bare launch (double-click) -> show the menu right here in this window. We do NOT
+    # auto-relaunch elevated (that made the original window vanish and looked like nothing
+    # happened). Core migration writes only to the user's own profile, so admin isn't needed;
+    # for machine-wide steps the user can right-click -> Run as administrator. The menu is
+    # wrapped so any error stays on screen instead of the console closing silently.
     if not argv:
-        if not is_admin():
-            if try_elevate():
-                return  # elevated instance launched; this un-elevated one exits
-            # Elevation declined/unavailable -> continue as standard user (core migration
-            # writes only to the user's own profile and does not require admin).
-            say("Running without administrator rights. Core migration still works; only "
-                "machine-wide steps (system env vars) may be limited.", style="yellow")
-        interactive_menu()
+        try:
+            interactive_menu()
+        except Exception as e:
+            import traceback
+            say(f"\nUnexpected error: {e}", style="red")
+            traceback.print_exc()
+            _pause()
         return
-    # CLI usage stays un-elevated and scriptable.
+    # CLI usage stays scriptable.
     parser = build_parser()
     args = parser.parse_args(argv)
     args.func(args)

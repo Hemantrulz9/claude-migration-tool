@@ -35,8 +35,9 @@ flowchart LR
 ## Run it (single program, double-click)
 
 **Easiest:** download **`Claude-Migrate.exe`** from the [Releases](../../releases) page, then double-click it.
-- It asks for **administrator rights** (UAC), then opens an interactive menu.
-- No Python install required — everything is bundled in the one file.
+- A menu opens right away — no Python install required (everything is bundled in the one file).
+- **First run shows "Windows protected your PC"?** Click **More info → Run anyway** (it's self-signed, not malware).
+- Admin isn't needed for normal use. For machine-wide steps, right-click the exe → **Run as administrator**.
 - Cloned the repo instead? Double-click **`Claude-Migrate.bat`** (self-elevates and runs from
   source), or build the exe yourself (see below).
 

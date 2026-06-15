@@ -113,7 +113,7 @@ def run_preflight(target: Path | None = None) -> dict:
     ok is False if any CRITICAL check failed (caller should halt).
     """
     target = Path(target) if target else config.USERPROFILE
-    _say("\n== Pre-flight: validating target machine ==", style="bold cyan")
+    _say("\n== Checking whether this PC is ready for Claude ==", style="bold cyan")
     results = []
     critical_failed = False
 
@@ -154,8 +154,8 @@ def run_preflight(target: Path | None = None) -> dict:
 
     ok = not critical_failed
     if ok:
-        _say("\nPre-flight passed (no critical failures).", style="bold green")
+        _say("\nThis PC is ready. You can go ahead.", style="bold green")
     else:
-        _say("\nPre-flight BLOCKED: fix the critical item(s) above before continuing.", style="bold red")
+        _say("\nNot ready yet - fix the item(s) marked [FAIL] above, then run this again.", style="bold red")
     log("INFO", f"Preflight complete. ok={ok}")
     return {"ok": ok, "results": results}
